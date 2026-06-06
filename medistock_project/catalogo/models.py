@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator  # 🌟 Agregamos el validador oficial
 
 class Bodega(models.Model):
     nombre = models.CharField(max_length=100)
@@ -10,7 +11,13 @@ class Producto(models.Model):
     codigo_producto = models.CharField(max_length=50, unique=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    # 🛡️ Campo protegido contra valores negativos usando MinValueValidator(0)
+    precio_unitario = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
+    )
     
     # 🌟 Nuevo Campo para las alertas de reabastecimiento
     stock_minimo = models.PositiveIntegerField(default=100)

@@ -1,4 +1,6 @@
-
+/* ==========================================================================
+   1. CONFIGURACIONES GENERALES Y RESETEO
+   ========================================================================== */
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -11,7 +13,9 @@ body {
     color: #333; 
 }
 
-
+/* ==========================================================================
+   2. BARRA DE NAVEGACIÓN SUPERIOR (NAVBAR)
+   ========================================================================== */
 .navbar-custom { 
     background-color: #003399; 
     color: white; 
@@ -54,7 +58,6 @@ body {
     border-radius: 15px; 
 }
 
-
 .header-cart-btn {
     background: none;
     border: none;
@@ -68,10 +71,10 @@ body {
     transition: transform 0.2s;
     padding: 5px;
 }
+
 .header-cart-btn:hover {
     transform: scale(1.1);
 }
-
 
 .header-cart-badge {
     position: absolute;
@@ -88,6 +91,9 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+/* ==========================================================================
+   3. ESTRUCTURA Y BARRA LATERAL (SIDEBAR)
+   ========================================================================== */
 .main-container { 
     display: flex; 
     max-width: 1440px; 
@@ -109,6 +115,7 @@ body {
 .filter-group {
     border-bottom: 1px solid #e2e8f0;
 }
+
 .filter-group:last-child {
     border-bottom: none;
 }
@@ -148,6 +155,7 @@ body {
 .filter-group.closed .filter-content {
     display: none;
 }
+
 .filter-group.closed .filter-arrow {
     transform: rotate(180deg);
 }
@@ -157,6 +165,9 @@ body {
     padding: 0;
 }
 
+/* ==========================================================================
+   4. CASILLAS ESTILIZADAS (RADIOS Y CHECKBOXES REDONDOS)
+   ========================================================================== */
 .filter-option {
     display: flex;
     align-items: center;
@@ -165,13 +176,13 @@ body {
     color: #555;
 }
 
-
-.filter-option input[type="checkbox"] {
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    border: 1px solid #cbd5e0;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e0;
     border-radius: 50%;
     margin-right: 12px;
     outline: none;
@@ -180,126 +191,221 @@ body {
     align-items: center;
     justify-content: center;
     background: #fff;
+    transition: background-color 0.2s, border-color 0.2s;
 }
-.filter-option input[type="checkbox"]:checked {
+
+.filter-option input[type="checkbox"]:checked,
+.filter-option input[type="radio"]:checked {
     border-color: #003399;
     background-color: #003399;
     box-shadow: inset 0 0 0 3px #fff;
 }
 
+.filter-option label {
+    cursor: pointer;
+    user-select: none;
+}
+
 .filter-content::-webkit-scrollbar { width: 6px; }
 .filter-content::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
 
-
+/* ==========================================================================
+   5. SECCIÓN DE PRODUCTOS - REDISEÑO "ESTILO DR. SIMI"
+   ========================================================================== */
 .content-products { 
     flex: 1; 
+    background-color: #000000 !important; /* Fondo negro premium */
+    padding: 30px 20px;
+    border-radius: 8px;
 }
 
 .content-header { 
-    margin-bottom: 20px; 
-    font-size: 13px; 
-    color: #718096; 
+    margin-bottom: 25px; 
+    font-size: 16px; 
+    color: #ffffff !important;
+    font-weight: bold;
+    border-left: 4px solid #73c25b;
+    padding-left: 10px;
 }
 
 .grid-products { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 25px; 
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+    gap: 20px; 
 }
 
+/* Tarjeta Blanca Redondeada */
 .product-card { 
-    background: white; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 8px; 
-    padding: 20px; 
+    background: #ffffff !important; 
+    border: none !important; 
+    border-radius: 12px !important; 
+    padding: 15px !important; 
     display: flex; 
     flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
 }
 
 .product-img { 
     width: 100%; 
-    height: 160px; 
-    background-color: #ffffff; 
+    height: 180px; 
+    background-color: #ffffff !important; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 55px; 
-    margin-bottom: 15px; 
-}
-
-.product-name { 
-    font-size: 15px; 
-    font-weight: 600; 
-    color: #1a202c;
-    margin-bottom: 6px;
-    min-height: 42px;
-}
-
-.product-sku { 
-    font-size: 11px; 
-    color: #a0aec0; 
     margin-bottom: 12px; 
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.product-brand {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #888888;
+    font-weight: bold;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Nombre comercial verde vibrante */
+.product-name { 
+    font-size: 15px !important; 
+    font-weight: bold !important; 
+    color: #0d8a43 !important;
+    margin-bottom: 8px !important;
+    line-height: 1.3 !important;
+    height: 40px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: auto;
+}
+
+/* Contenedor de Precios Normal y Oferta */
+.price-container {
+    margin-bottom: 12px;
+}
+
+.price-normal {
+    font-size: 12px;
+    color: #888888;
+    text-decoration: line-through;
+    margin-bottom: 2px;
+}
+
+.price-oferta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .product-price { 
-    font-size: 18px; 
-    font-weight: bold; 
-    color: #1a202c; 
-    margin-bottom: 15px;
+    font-size: 18px !important; 
+    font-weight: 800 !important; 
+    color: #ff9900 !important; /* Dorado/Naranjo destacado */
+    margin: 0 !important;
 }
 
+.badge-oferta {
+    background-color: #ffcc00;
+    color: #000000;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
 
+.product-sku { 
+    font-size: 11px !important; 
+    color: #666666 !important; 
+    background: #f4f6f8;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-bottom: 12px !important; 
+    text-align: center;
+}
+
+/* Selectores de Cantidad y Botón Cilíndrico */
 .product-actions {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
     margin-top: auto;
 }
 
 .quantity-selector {
     display: flex;
-    align-items: center;
     border: 1px solid #cbd5e0;
-    border-radius: 4px;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 32px;
 }
 
 .quantity-btn {
-    background: #fff;
+    background: #f4f6f8;
     border: none;
-    width: 26px;
-    height: 32px;
+    width: 35px;
     font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
     color: #4a5568;
+    transition: background 0.2s;
 }
+
+.quantity-btn:hover {
+    background: #e2e8f0;
+}
+
 .quantity-input {
-    width: 28px;
-    height: 32px;
+    width: 100%;
+    height: 100%;
     text-align: center;
     border: none;
     border-left: 1px solid #cbd5e0;
     border-right: 1px solid #cbd5e0;
     font-size: 13px;
+    font-weight: bold;
+    color: #333;
     outline: none;
 }
 
 .btn-buy { 
-    flex: 1;
-    background-color: #003399; 
-    color: white; 
-    border: none; 
-    height: 34px;
-    border-radius: 4px; 
-    font-size: 11px;
-    font-weight: bold; 
-    cursor: pointer; 
-    text-transform: uppercase;
-    transition: background 0.2s;
+    background-color: #73c25b !important; /* Verde Simi Cilíndrico */
+    color: white !important; 
+    border: none !important; 
+    height: 38px !important;
+    border-radius: 20px !important; 
+    font-size: 14px !important;
+    font-weight: bold !important; 
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.2s ease !important;
+    width: 100%;
 }
-.btn-buy:hover { background-color: #002266; }
 
+.btn-buy:hover { 
+    background-color: #5da647 !important; 
+}
 
+/* ==========================================================================
+   6. INTERFAZ INTERNA DEL CARRITO DE COMPRAS (PANEL DESLIZABLE)
+   ========================================================================== */
 .cart-sidebar {
     position: fixed;
     top: 0;
@@ -313,6 +419,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .cart-sidebar.open {
     right: 0;
 }
@@ -325,6 +432,7 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
 .close-cart {
     background: none;
     border: none;
@@ -348,6 +456,7 @@ body {
     border-bottom: 1px solid #edf2f7;
     font-size: 14px;
 }
+
 .cart-item-details h4 { font-size: 14px; color: #2d3748; }
 .cart-item-details p { font-size: 12px; color: #718096; }
 
@@ -364,6 +473,7 @@ body {
     border-top: 1px solid #edf2f7;
     background: #f8fafc;
 }
+
 .cart-total-row {
     display: flex;
     justify-content: space-between;
@@ -371,6 +481,7 @@ body {
     font-weight: bold;
     margin-bottom: 15px;
 }
+
 .btn-checkout {
     width: 100%;
     background: #ffcc00;
@@ -382,6 +493,7 @@ body {
     cursor: pointer;
     text-transform: uppercase;
 }
+
 .btn-checkout:hover { background: #e6b800; }
 
 .alert-info { 
