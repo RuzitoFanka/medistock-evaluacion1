@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediStock Portal - Autenticación</title>
+    <link class="style-link" rel="stylesheet" href="{% static 'catalogo/style.css' %}?v=1.5">
+</head>
+<body class="login-body">
+
+    <div class="login-card">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #1a202c; font-size: 24px; margin: 0 0 8px 0; font-weight: bold;">MediStock Portal</h2>
+            <p style="color: #718096; margin: 0; font-size: 14px;">Ingreso al Módulo de Adquisiciones</p>
+        </div>
+
+        {% if error_message %}
+        <div class="login-alert-error">
+            ⚠️ {{ error_message }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'login-view' %}">
+            {% csrf_token %}
+            
+            <div class="login-form-group">
+                <label for="username" class="login-label">Usuario Operador:</label>
+                <input type="text" id="username" name="username" class="login-input" required placeholder="Ej: j.perez">
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label for="password" class="login-label">Clave de Acceso:</label>
+                <input type="password" id="password" name="password" class="login-input" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-login-submit">Validar Credenciales</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <a href="{% url 'pantalla-tienda' %}" style="text-decoration: none; color: #4a5568; font-size: 14px; font-weight: bold;">
+                ← Volver al Catálogo Público
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

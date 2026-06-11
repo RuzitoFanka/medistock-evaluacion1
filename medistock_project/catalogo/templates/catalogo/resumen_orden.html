@@ -4,42 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediStock Portal - Resumen de Orden</title>
-    <link rel="stylesheet" href="{% static 'catalogo/style.css' %}?v=1.5">
+    <title>MediStock Portal - Confirmación de Pedido</title>
+    <link rel="stylesheet" href="{% static 'catalogo/style.css' %}?v=3.5">
 </head>
-<body style="background-color: #f7fafc; font-family: sans-serif; margin: 0; padding: 0;">
+<body class="medistock-resumen-body">
 
-    <header class="navbar-custom" style="background-color: #9ad1f5; padding: 20px; color: #1a202c; display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0; font-weight: bold;">MediStock Portal - Confirmación de Pedido</h2>
-        <a href="{% url 'pantalla-tienda' %}" style="text-decoration: none; color: #1a202c; font-weight: bold; background: white; padding: 8px 15px; border-radius: 4px; border: 1px solid #cbd5e0; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f7fafc'" onmouseout="this.style.backgroundColor='white'">
-            ← Volver al Catálogo
-        </a>
+    <header class="medistock-header-azul">
+        <div class="medistock-title-text">MediStock Portal – Confirmación de Pedido</div>
+        <a href="{% url 'pantalla-tienda' %}" class="btn-volver-metalico">⚙️ Volver al Catálogo</a>
     </header>
 
-    <main style="max-width: 800px; margin: 40px auto; padding: 20px;">
-        <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; border: 1px solid #e2e8f0;">
-            <h3 style="color: #2d3748; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">Detalle de los Insumos Solicitados</h3>
+    <main class="medistock-container">
+        <div class="tarjeta-clinica">
+            <div class="tarjeta-titulo-seccion">
+                <span>🧬 Detalle de los Insumos Solicitados</span>
+            </div>
             
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left;">
+            <table class="tabla-clinica-resumen">
                 <thead>
-                    <tr style="background-color: #f0f7fc; color: #2d3748; border-bottom: 2px solid #cbd5e0;">
-                        <th style="padding: 12px;">Producto</th>
-                        <th style="padding: 12px; text-align: center;">Cantidad</th>
-                        <th style="padding: 12px; text-align: right;">Total</th>
+                    <tr class="tabla-clinica-cabecera">
+                        <th class="tabla-clinica-th" style="text-align: left;">Producto</th>
+                        <th class="tabla-clinica-th" style="text-align: center; width: 140px;">Cantidad</th>
+                        <th class="tabla-clinica-th" style="text-align: right; width: 140px;">Total</th>
+                        <th class="tabla-clinica-th" style="text-align: center; width: 120px;">Acción</th>
                     </tr>
                 </thead>
                 <tbody id="listaResumenProductos">
                     </tbody>
             </table>
 
-            <div style="margin-top: 30px; background-color: #f0f7fc; padding: 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; color: #1a202c; border: 1px solid #e2e8f0;">
+            <div class="caja-total-acero">
                 <span>Total de la Orden:</span>
-                <span id="montoTotalOrden">$0</span>
+                <span id="montoTotalOrden" class="monto-total-num-destacado">$0</span>
             </div>
 
-            <div style="margin-top: 25px; display: flex; justify-content: flex-end;">
+            <div class="contenedor-centrado-boto">
                 {% csrf_token %}
-                <button onclick="confirmarYDescontarStock()" style="padding: 14px 30px; background-color: #48bb78; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase;">
+                <button id="btnFinalizar" onclick="confirmarYDescontarStock()" class="btn-finalizar-orden-verde">
                     Confirmar y Finalizar Adquisición
                 </button>
             </div>
@@ -49,50 +50,105 @@
     <script>
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-        document.addEventListener("DOMContentLoaded", () => {
+        function renderizarTabla() {
             const tablaBody = document.getElementById('listaResumenProductos');
             const contenedorTotal = document.getElementById('montoTotalOrden');
+            const btnFinalizar = document.getElementById('btnFinalizar');
+            
+            if (!tablaBody) return;
+
             if (carrito.length === 0) {
-                tablaBody.innerHTML = `<tr><td colspan="3" style="padding: 20px; text-align: center; color: #718096;">No hay productos registrados.</td></tr>`;
+                tablaBody.innerHTML = `<tr><td colspan="4" style="padding: 40px; text-align: center; color: #718096; font-size: 16px;">No hay productos registrados en su orden médica.</td></tr>`;
+                contenedorTotal.innerText = "$0";
+                if(btnFinalizar) btnFinalizar.style.display = 'none';
                 return;
             }
+
+            if(btnFinalizar) btnFinalizar.style.display = 'block';
             let costoTotal = 0;
             tablaBody.innerHTML = '';
 
-            carrito.forEach(item => {
+            carrito.forEach((item, index) => {
                 const subtotal = item.precio * item.cantidad;
                 costoTotal += subtotal;
+                
                 const fila = document.createElement('tr');
-                fila.style.borderBottom = "1px solid #e2e8f0";
+                fila.className = "tabla-clinica-tr";
                 fila.innerHTML = `
-                    <td style="padding: 15px; color: #2d3748;"><strong>${item.nombre}</strong></td>
-                    <td style="padding: 15px; text-align: center; color: #4a5568;">${item.cantidad} unidades</td>
-                    <td style="padding: 15px; text-align: right; font-weight: bold; color: #2d3748;">$${subtotal.toFixed(0)}</td>`;
+                    <td class="tabla-clinica-td" style="text-align: left; font-weight: 500;">${item.nombre}</td>
+                    <td class="tabla-clinica-td" style="text-align: center; color: #4a5568;">${item.cantidad} unidades</td>
+                    <td class="tabla-clinica-td" style="text-align: right; font-weight: bold; color: #102a43;">$${subtotal.toFixed(0)}</td>
+                    <td class="tabla-clinica-td" style="text-align: center;">
+                        <button onclick="eliminarProducto(${index})" class="btn-pastilla-eliminar">Eliminar ✕</button>
+                    </td>`;
                 tablaBody.appendChild(fila);
             });
             contenedorTotal.innerText = `$${costoTotal.toFixed(0)}`;
+        }
+
+        function eliminarProducto(index) {
+            if (confirm(`¿Está seguro de remover este insumo de la orden?`)) {
+                carrito.splice(index, 1);
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                renderizarTabla();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => { 
+            renderizarTabla(); 
         });
 
         function confirmarYDescontarStock() {
-            if (carrito.length === 0) return;
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            if (carrito.length === 0) { alert("El carrito está vacío."); return; }
+            const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (!csrfInput) { alert("Error de seguridad: No se encontró el token CSRF."); return; }
+            const csrfToken = csrfInput.value;
 
             fetch('/procesar-compra/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
                 body: JSON.stringify({ items: carrito })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error("Error en inventario (" + response.status + ")");
+                return response.json();
+            })
             .then(data => {
                 if (data.status === 'ok') {
-                    alert("¡Pedido archivado con éxito! Inventario actualizado.");
-                    localStorage.removeItem('carrito'); 
-                    window.location.href = '/';
+                    return fetch('/api/v1/pagos/procesar/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                        body: JSON.stringify({ items: carrito })
+                    });
                 } else {
-                    alert("Error: " + data.message);
+                    alert("Error de Stock: " + data.message);
+                    throw new Error("Cancelado.");
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .then(res_pago => {
+                if (!res_pago) return;
+                if (!res_pago.ok) throw new Error("Error Transbank (" + res_pago.status + ")");
+                return res_pago.json();
+            })
+            .then(data_pago => {
+                if (!data_pago) return;
+                if (data_pago.status === 'ok' && data_pago.url) {
+                    localStorage.removeItem('carrito');
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = data_pago.url;
+                    const inputToken = document.createElement('input');
+                    inputToken.type = 'hidden';
+                    inputToken.name = 'token_ws';
+                    inputToken.value = data_pago.token;
+                    form.appendChild(inputToken);
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    alert("Transbank rechazó la solicitud.");
+                }
+            })
+            .catch(error => { alert("Detención del sistema: " + error.message); });
         }
     </script>
 </body>

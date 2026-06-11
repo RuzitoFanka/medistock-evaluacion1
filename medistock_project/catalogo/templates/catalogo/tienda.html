@@ -18,10 +18,16 @@
         <div class="top-info-container">
             <div class="top-info"> Módulos de Adquisición Centralizados</div>
             
-            <button class="header-cart-btn" onclick="toggleCartPanel()" title="Ver Carrito de Suministros">
-                👜 
-                <span class="header-cart-badge" id="cartCount">0</span>
-            </button>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="/login/" class="header-login-btn" style="text-decoration: none; color: #1a202c; font-weight: bold; background: white; padding: 8px 16px; border-radius: 4px; border: 1px solid #cbd5e0; font-size: 14px; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f7fafc'; this.style.borderColor='#a0aec0';" onmouseout="this.style.backgroundColor='white'; this.style.borderColor='#cbd5e0';">
+                    👤 Iniciar Sesión
+                </a>
+
+                <button class="header-cart-btn" onclick="toggleCartPanel()" title="Ver Carrito de Suministros">
+                    👜 
+                    <span class="header-cart-badge" id="cartCount">0</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -199,24 +205,39 @@
             let unidadesTotales = 0;
             let costoTotal = 0;
 
-            carrito.forEach((item) => {
+            carrito.forEach((item, index) => {
                 unidadesTotales += item.cantidad;
                 costoTotal += (item.precio * item.cantidad);
+                
                 const li = document.createElement('li');
                 li.style.padding = "12px 0";
                 li.style.borderBottom = "1px solid #e2e8f0";
                 li.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; font-size: 14px; align-items: center;">
-                        <span><strong>${item.nombre}</strong><br><small style="color: #718096;">Cant: ${item.cantidad}</small></span>
-                        <span style="font-weight: bold; color: #2d3748;">$${(item.precio * item.cantidad).toFixed(0)}</span>
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; align-items: center; gap: 10px;">
+                        <span style="flex-grow: 1;">
+                            <strong>${item.nombre}</strong><br>
+                            <small style="color: #718096;">Cant: ${item.cantidad}</small>
+                        </span>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="font-weight: bold; color: #2d3748;">$${(item.precio * item.cantidad).toFixed(0)}</span>
+                            <button onclick="quitarDelCarritoLateral(${index})" style="background: none; border: none; color: #e53e3e; font-size: 20px; font-weight: bold; cursor: pointer; padding: 0 5px; line-height: 1;" title="Quitar este insumo">
+                                ×
+                            </button>
+                        </div>
                     </div>`;
                 contenedorItems.appendChild(li);
             });
+            
             if (badgeContador) badgeContador.innerText = unidadesTotales;
             if (totalSuma) totalSuma.innerText = `$${costoTotal.toFixed(0)}`;
         }
 
-        // SEPARA LA LÓGICA: Esta función ahora solo salta al segundo archivo resumen
+        function quitarDelCarritoLateral(index) {
+            carrito.splice(index, 1);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            actualizarInterfazCarrito();
+        }
+
         function procesarCompraCarrito() {
             if (carrito.length === 0) {
                 alert("El carrito está vacío.");
