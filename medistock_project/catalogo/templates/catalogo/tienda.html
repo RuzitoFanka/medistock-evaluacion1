@@ -243,9 +243,7 @@
                 alert("El carrito está vacío.");
                 return;
             }
-
-            // 🌟 CLONACIÓN BLINDADA: Guardamos una copia exacta en "ultimo_pedido" 
-            // antes de que cualquier operación limpie la memoria operativa.
+a.
             const ordenAPreparar = [...carrito];
             localStorage.setItem('ultimo_pedido', JSON.stringify(ordenAPreparar));
 
@@ -262,12 +260,12 @@
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(res => {
                 if (res.status === 200) {
-                    // Limpiamos la memoria del carrito del catálogo para la próxima compra
+
                     localStorage.removeItem('carrito');
                     carrito = [];
                     actualizarInterfazCarrito();
                     
-                    // Viajamos a la pantalla de resumen. Ahora leerá "ultimo_pedido" perfectamente.
+ 
                     window.location.href = "{% url 'resumen_orden' %}"; 
                 } else {
                     alert("Error en el pedido: " + res.body.error);

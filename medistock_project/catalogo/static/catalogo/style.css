@@ -1,6 +1,4 @@
-/* =========================================================================
-   MEDISTOCK SYSTEM - DISEÑO ULTRA-MODERNO RESPONSIVO
-   ========================================================================= */
+
 
 :root {
     --primary: #0284c7;
@@ -23,7 +21,7 @@ body {
     color: var(--text-main);
 }
 
-/* 🟦 NAVBAR PREMIUM */
+
 .navbar-custom {
     background-color: #ffffff;
     padding: 16px 40px;
@@ -105,7 +103,7 @@ body {
     border-radius: 10px;
 }
 
-/* 🗺️ LAYOUT ESTRUCTURAL */
+
 .main-container {
     display: flex;
     max-width: 1440px;
@@ -158,7 +156,7 @@ body {
     color: #475569;
 }
 
-/* 📦 DASHBOARD DE PRODUCTOS */
+
 .content-products {
     flex-grow: 1;
 }
