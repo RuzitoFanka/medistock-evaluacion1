@@ -1,26 +1,28 @@
 from django.contrib import admin
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
-# Agregamos 'login_view' a tus importaciones existentes
-from catalogo.views import (
-    ConsultaStockAPIView, ProcesarPagoAPIView, GenerarTrackingAPIView, 
-    vista_tienda, procesar_compra_view, resumen_orden_view, login_view
-)
+from django.conf import settings
+from django.conf.urls.static import static
+from catalogo import views as catalogo_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # 🔐 Nueva ruta asignada para el módulo de login
-    path('login/', login_view, name='login'),
+    # 🛒 Páginas Web del Portal (Conectadas a tus funciones reales del views.py)
+    path('', catalogo_views.vista_tienda, name='pantalla-tienda'),  
     
-    # Rutas del portal web que ya tenías
-    path('', vista_tienda, name='pantalla-tienda'),
-    path('procesar-compra/', procesar_compra_view, name='procesar_compra'),
-    path('resumen-orden/', resumen_orden_view, name='resumen_orden'),
+    # 📉 NUEVA RUTA INTEGRADA: Para recibir el carrito y descontar el stock en cascada (Global + Bodegas)
+    path('tienda/procesar-pedido/', catalogo_views.procesar_pedido, name='procesar_pedido'),
     
-    # Endpoints de la API REST que ya tenías
-    path('api/v1/auth/', obtain_auth_token, name='api-token'),
-    path('api/v1/productos/<str:codigo_producto>/', ConsultaStockAPIView.as_view(), name='consulta-stock'),
-    path('api/v1/pagos/procesar/', ProcesarPagoAPIView.as_view(), name='procesar-pago'),
-    path('api/v1/logistica/tracking/', GenerarTrackingAPIView.as_view(), name='generar-tracking'),
+    path('resumen-orden/', catalogo_views.resumen_orden_view, name='resumen_orden'),
+    path('procesar-compra/', catalogo_views.procesar_compra_view, name='procesar_compra'),
+    path('login/', catalogo_views.login_view, name='login'),
+    
+    # 🌐 Endpoints de la API REST (Llamando correctamente a tus clases de Rest Framework)
+    path('api/v1/productos/<str:codigo_producto>/', catalogo_views.ConsultaStockAPIView.as_view(), name='consulta-stock'),
+    path('api/v1/pagos/procesar/', catalogo_views.ProcesarPagoAPIView.as_view(), name='procesar-pago'),
+    path('api/v1/logistica/tracking/', catalogo_views.GenerarTrackingAPIView.as_view(), name='generar-tracking'),
 ]
+
+# 🔌 INYECTOR DE ARCHIVOS ESTÁTICOS (Fuerza la carga del style.css en modo DEBUG)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

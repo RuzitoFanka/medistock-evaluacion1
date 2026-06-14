@@ -5,26 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediStock Portal - Productos Destacados</title>
-    <link rel="stylesheet" href="{% static 'catalogo/style.css' %}?v=1.5">
+    <link rel="stylesheet" href="{% static 'catalogo/style.css' %}?v=1.6">
 </head>
 <body>
+    {% csrf_token %}
 
     <header class="navbar-custom">
-        <a href="/" class="navbar-brand-link" title="Volver al Inicio">
-            <div class="navbar-brand">MediStock Portal</div>
+        <a href="{% url 'pantalla-tienda' %}" class="navbar-brand-link" title="Volver al Inicio">
+            <div class="navbar-brand">⚕️ MediStock Portal</div>
         </a>
         <input type="text" class="search-bar" placeholder="¿Qué estás buscando?">
         
         <div class="top-info-container">
-            <div class="top-info"> Módulos de Adquisición Centralizados</div>
+            <div class="top-info">Módulos de Adquisición Centralizados</div>
             
             <div style="display: flex; align-items: center; gap: 15px;">
-                <a href="/login/" class="header-login-btn" style="text-decoration: none; color: #1a202c; font-weight: bold; background: white; padding: 8px 16px; border-radius: 4px; border: 1px solid #cbd5e0; font-size: 14px; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f7fafc'; this.style.borderColor='#a0aec0';" onmouseout="this.style.backgroundColor='white'; this.style.borderColor='#cbd5e0';">
+                <a href="{% url 'login' %}" class="header-login-btn" style="text-decoration: none; color: #1a202c; font-weight: bold; background: white; padding: 8px 16px; border-radius: 4px; border: 1px solid #cbd5e0; font-size: 14px; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f7fafc'; this.style.borderColor='#a0aec0';" onmouseout="this.style.backgroundColor='white'; this.style.borderColor='#cbd5e0';">
                     👤 Iniciar Sesión
                 </a>
 
                 <button class="header-cart-btn" onclick="toggleCartPanel()" title="Ver Carrito de Suministros">
-                    👜 
+                    👜 Carrito
                     <span class="header-cart-badge" id="cartCount">0</span>
                 </button>
             </div>
@@ -32,6 +33,7 @@
     </header>
 
     <div class="main-container">
+        
         <aside class="sidebar">
             <div class="filter-group bio-special">
                 <div class="filter-header" onclick="toggleFiltro(this)">
@@ -89,10 +91,8 @@
 
                     <div>
                         <div class="price-container">
-                            <div class="price-normal">${{ prod.precio_unitario }} (Normal)</div>
                             <div class="price-oferta-row">
                                 <div class="product-price">${{ prod.precio_unitario }}</div>
-                                <span class="badge-oferta">Oferta</span>
                             </div>
                         </div>
 
@@ -106,12 +106,13 @@
                                 <input type="text" class="quantity-input" value="1" readonly>
                                 <button class="quantity-btn" onclick="cambiarCantidad(this, 1, {{ prod.stock_total }})">+</button>
                             </div>
+                            
                             {% if prod.stock_total > 0 %}
                             <button class="btn-buy" onclick="agregarAlCarrito('{{ prod.id }}', '{{ prod.nombre }}', '{{ prod.precio_unitario }}', {{ prod.stock_total }}, this)">
                                 Agregar 🛒
                             </button>
                             {% else %}
-                            <button class="btn-buy" style="background-color: #a0aec0 !important; cursor: not-allowed;" onclick="agregarAlCarrito('{{ prod.id }}', '{{ prod.nombre }}', 0, this)">
+                            <button class="btn-buy" style="background-color: #a0aec0 !important; cursor: not-allowed;" disabled>
                                 Agotado 🚫
                             </button>
                             {% endif %}
@@ -119,27 +120,27 @@
                     </div>
                 </div>
                 {% empty %}
-                <div class="alert-info" style="color: white;">No se registran productos en el catálogo comercial actual.</div>
+                <div class="alert-info">No se registran productos en el catálogo comercial actual.</div>
                 {% endfor %}
             </div>
         </section>
     </div>
 
-    <div class="cart-sidebar" id="cartSidebar" style="position: fixed; top: 0; right: -400px; width: 350px; height: 100%; background: #fcfaf6; box-shadow: -2px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; z-index: 1000; padding: 0; display: flex; flex-direction: column;">
-        <div class="cart-header" style="display: flex; justify-content: space-between; align-items: center; color: #1a202c; background-color: #9ad1f5; padding: 20px;">
+    <div class="cart-sidebar" id="cartSidebar" style="position: fixed; top: 0; right: -400px; width: 350px; height: 100%; background: #ffffff; box-shadow: -2px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; z-index: 1000; padding: 0; display: flex; flex-direction: column;">
+        <div class="cart-header" style="display: flex; justify-content: space-between; align-items: center; color: white; background-color: #0284c7; padding: 20px;">
             <h3 style="margin: 0; font-weight: bold; font-size: 18px;">Pedido de Suministros</h3>
-            <button class="close-cart" onclick="toggleCartPanel()" style="background: none; border: none; color: #1a202c; font-size: 24px; cursor: pointer; font-weight: bold;">×</button>
+            <button class="close-cart" onclick="toggleCartPanel()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; font-weight: bold;">×</button>
         </div>
         
         <ul class="cart-items-list" id="cartItemsContainer" style="list-style: none; padding: 0 20px; margin: 20px 0 0 0; flex-grow: 1; overflow-y: auto;">
-            </ul>
+        </ul>
 
-        <div class="cart-footer" style="background-color: #f0f7fc; padding: 20px; color: #1a202c; border-top: 1px solid #e2e8f0;">
+        <div class="cart-footer" style="background-color: #f8fafc; padding: 20px; color: #0f172a; border-top: 1px solid #e2e8f0;">
             <div class="cart-total-row" style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 15px; font-weight: bold;">
                 <span>Monto Total:</span>
-                <span id="cartTotalVal" style="color: #1a202c;">$0</span>
+                <span id="cartTotalVal" style="color: #0284c7;">$0</span>
             </div>
-            <button class="btn-checkout" onclick="procesarCompraCarrito()" style="width: 100%; padding: 14px; background: #48bb78; border: 1px solid #38a169; color: white; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase;">Generar Orden de Compra</button>
+            <button class="btn-checkout" onclick="procesarCompraCarrito()" style="width: 100%; padding: 14px; background: #22c55e; border: none; color: white; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">Generar Orden de Compra</button>
         </div>
     </div>
 
@@ -192,7 +193,6 @@
             if(cantidadInput) cantidadInput.value = 1;
             actualizarInterfazCarrito();
             localStorage.setItem('carrito', JSON.stringify(carrito));
-            alert(`"${nombre}" añadido al pedido.`);
         }
 
         function actualizarInterfazCarrito() {
@@ -216,11 +216,11 @@
                     <div style="display: flex; justify-content: space-between; font-size: 14px; align-items: center; gap: 10px;">
                         <span style="flex-grow: 1;">
                             <strong>${item.nombre}</strong><br>
-                            <small style="color: #718096;">Cant: ${item.cantidad}</small>
+                            <small style="color: #64748b;">Cant: ${item.cantidad}</small>
                         </span>
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <span style="font-weight: bold; color: #2d3748;">$${(item.precio * item.cantidad).toFixed(0)}</span>
-                            <button onclick="quitarDelCarritoLateral(${index})" style="background: none; border: none; color: #e53e3e; font-size: 20px; font-weight: bold; cursor: pointer; padding: 0 5px; line-height: 1;" title="Quitar este insumo">
+                            <span style="font-weight: bold; color: #0f172a;">$${(item.precio * item.cantidad).toFixed(0)}</span>
+                            <button onclick="quitarDelCarritoLateral(${index})" style="background: none; border: none; color: #ef4444; font-size: 20px; font-weight: bold; cursor: pointer; padding: 0 5px; line-height: 1;" title="Quitar este insumo">
                                 ×
                             </button>
                         </div>
@@ -243,12 +243,45 @@
                 alert("El carrito está vacío.");
                 return;
             }
-            window.location.href = '/resumen-orden/';
+
+            // 🌟 CLONACIÓN BLINDADA: Guardamos una copia exacta en "ultimo_pedido" 
+            // antes de que cualquier operación limpie la memoria operativa.
+            const ordenAPreparar = [...carrito];
+            localStorage.setItem('ultimo_pedido', JSON.stringify(ordenAPreparar));
+
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            fetch("{% url 'procesar_pedido' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify({ items: ordenAPreparar })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(res => {
+                if (res.status === 200) {
+                    // Limpiamos la memoria del carrito del catálogo para la próxima compra
+                    localStorage.removeItem('carrito');
+                    carrito = [];
+                    actualizarInterfazCarrito();
+                    
+                    // Viajamos a la pantalla de resumen. Ahora leerá "ultimo_pedido" perfectamente.
+                    window.location.href = "{% url 'resumen_orden' %}"; 
+                } else {
+                    alert("Error en el pedido: " + res.body.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Hubo un problema de red al comunicar con los módulos de adquisición.");
+            });
         }
 
         function toggleFiltro(elemento) {
             const contenido = elemento.nextElementSibling;
-            contenido.style.display = (contenido.style.display === "none") ? "block" : "none";
+            contenido.style.display = (contenido.style.display === "none" || contenido.style.display === "") ? "block" : "none";
         }
     </script>
 </body>

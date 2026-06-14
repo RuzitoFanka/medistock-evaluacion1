@@ -1,13 +1,14 @@
-import json
-import random
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from transbank.webpay.webpay_plus.transaction import Transaction
 from .models import Producto, BodegaStock
+import json
+import random
 
 # =========================================================================
 # VISTAS DE LAS APIs REST FRAMEWORK (CON TRANSBANK INTEGRADO)
@@ -78,7 +79,6 @@ def resumen_orden_view(request):
     return render(request, 'catalogo/resumen_orden.html')
 
 
-# 🌟 AQUÍ ESTÁ LA FUNCIÓN QUE FALTABA IMPORTAR
 def login_view(request):
     """ Módulo de Autenticación para operadores de MediStock """
     if request.method == 'POST':
@@ -134,3 +134,63 @@ def procesar_compra_view(request):
             return JsonResponse({'status': 'error', 'message': str(e)})
             
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=400)
+
+
+# =========================================================================
+# 📉 ENLACE DE COMPRA DESDE EL CARRITO (REBAJA STOCK GLOBAL Y EN BODEGAS)
+# =========================================================================
+def procesar_pedido(request):
+    """ Recibe el carrito, valida existencias, y descuenta tanto el stock global como por bodega """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            items_pedido = data.get('items', [])
+            
+            if not items_pedido:
+                return JsonResponse({'error': 'No hay artículos en el pedido.'}, status=400)
+            
+            # Bloque transaccional: Si algo falla con un producto, no se guarda nada (integridad total)
+            with transaction.atomic():
+                for item in items_pedido:
+                    producto_id = item.get('id')
+                    cantidad_comprada = int(item.get('cantidad'))
+                    
+                    # 1️⃣ Buscamos el Producto y bloqueamos la fila para evitar concurrencia
+                    producto = Producto.objects.select_for_update().get(id=producto_id)
+                    
+                    # Validación estricta en servidor antes de procesar el descuento
+                    if producto.stock_total < cantidad_comprada:
+                        return JsonResponse({
+                            'error': f'Stock insuficiente para "{producto.nombre}". Disponible en sistema: {producto.stock_total} un.'
+                        }, status=400)
+                    
+                    # 2️⃣ DESCUENTO EN BODEGAS FÍSICAS (BodegaStock) - De mayor a menor stock
+                    existencias_bodega = BodegaStock.objects.filter(producto_id=producto_id).order_by('-stock')
+                    por_descontar = cantidad_comprada
+                    
+                    for registro in existencias_bodega:
+                        if registro.stock >= por_descontar:
+                            registro.stock -= por_descontar
+                            registro.save()
+                            por_descontar = 0
+                            break
+                        else:
+                            por_descontar -= registro.stock
+                            registro.stock = 0
+                            registro.save()
+                    
+                    if por_descontar > 0:
+                        raise Exception(f"Inconsistencia: No se pudo descontar el total de bodegas para {producto.nombre}")
+
+                    # 3️⃣ DESCUENTO EN EL STOCK TOTAL GLOBAL DEL PRODUCTO
+                    producto.stock_total -= cantidad_comprada
+                    producto.save()
+                    
+            return JsonResponse({'message': 'Orden procesada con éxito. El stock global y de bodegas ha sido rebajado.'}, status=200)
+            
+        except Producto.DoesNotExist:
+            return JsonResponse({'error': 'Uno de los insumos seleccionados no existe en el catálogo.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': f'Error en el servidor de inventario: {str(e)}'}, status=500)
+            
+    return JsonResponse({'error': 'Método inválido.'}, status=405)

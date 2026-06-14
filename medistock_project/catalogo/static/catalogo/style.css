@@ -1,176 +1,328 @@
 /* =========================================================================
-   DISEÑO PROFESIONAL - PANTALLA RESUMEN DE ORDEN (MEDISTOCK)
+   MEDISTOCK SYSTEM - DISEÑO ULTRA-MODERNO RESPONSIVO
    ========================================================================= */
 
-/* Fondo general con degradado suave */
-.medistock-resumen-body {
-    background: linear-gradient(135deg, #e2ebf0 0%, #cfd9df 100%) !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    min-height: 100vh;
+:root {
+    --primary: #0284c7;
+    --primary-dark: #0369a1;
+    --bg-main: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
 }
 
-/* Header con relieve azul */
-.medistock-header-azul {
-    background: linear-gradient(to bottom, #9ad1f5, #7ebbe2) !important;
-    padding: 15px 40px !important;
-    color: #102a43 !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
-    border-bottom: 2px solid #64a6d1 !important;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.medistock-title-text {
-    margin: 0 !important;
-    font-size: 24px !important;
-    font-weight: 600 !important;
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* 🟦 NAVBAR PREMIUM */
+.navbar-custom {
+    background-color: #ffffff;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand-link {
+    text-decoration: none;
+}
+
+.navbar-brand {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary);
     letter-spacing: -0.5px;
 }
 
-/* Botón Volver Redondeado Estilo Metálico */
-.btn-volver-metalico {
-    text-decoration: none !important;
-    color: #2d3748 !important;
-    font-weight: bold !important;
-    background: linear-gradient(to bottom, #ffffff, #e2e8f0) !important;
-    padding: 8px 20px !important;
-    border-radius: 20px !important;
-    border: 1px solid #bbaec0 !important;
-    font-size: 14px !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+.search-bar {
+    width: 400px;
+    padding: 10px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    background-color: #f1f5f9;
+    font-size: 14px;
     transition: all 0.2s ease;
-}
-.btn-volver-metalico:hover {
-    background: linear-gradient(to bottom, #edf2f7, #cbd5e0) !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+    outline: none;
 }
 
-/* Contenedor de la Tarjeta */
-.medistock-container {
-    max-width: 850px !important;
-    margin: 60px auto !important;
-    padding: 0 20px !important;
-}
-
-/* Tarjeta Blanca Flotante con Sombra */
-.tarjeta-clinica {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.12) !important;
-    padding: 40px !important;
-    border: 1px solid rgba(255,255,255,0.8) !important;
-}
-
-.tarjeta-titulo-seccion {
-    color: #102a43 !important;
-    font-size: 20px !important;
-    margin-top: 0 !important;
-    margin-bottom: 30px !important;
-    font-weight: 600 !important;
-}
-
-/* Tabla de Insumos Acero */
-.tabla-clinica-resumen {
-    width: 100% !important;
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-    margin-bottom: 30px !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-    border: 1px solid #cbd5e0 !important;
-}
-
-.tabla-clinica-cabecera {
-    background: linear-gradient(to bottom, #b8cddc, #9eb5c7) !important;
-}
-
-.tabla-clinica-th {
-    padding: 14px 20px !important;
-    color: #102a43 !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-}
-
-.tabla-clinica-tr {
+.search-bar:focus {
     background-color: #ffffff;
-    transition: background-color 0.2s;
-}
-.tabla-clinica-tr:nth-child(even) {
-    background-color: #f7fafc;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
 }
 
-.tabla-clinica-td {
-    padding: 18px 20px !important;
-    color: #2d3748 !important;
-    font-size: 15px !important;
-    border-bottom: 1px solid #e2e8f0 !important;
+.top-info-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-/* Botón de Eliminación tipo Pastilla */
-.btn-pastilla-eliminar {
-    background: linear-gradient(to bottom, #f2a4a4, #e53e3e) !important;
-    border: 1px solid #c53030 !important;
-    color: white !important;
-    padding: 6px 16px !important;
-    border-radius: 20px !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 13px !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    transition: all 0.2s;
-}
-.btn-pastilla-eliminar:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+.top-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 20px;
 }
 
-/* Caja de Totales Azulada */
-.caja-total-acero {
-    background: linear-gradient(to bottom, #dbe6f0, #c8daf0) !important;
-    padding: 24px 30px !important;
-    border-radius: 12px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    font-size: 24px !important;
-    font-weight: 500 !important;
-    color: #102a43 !important;
-    margin-bottom: 35px !important;
-    border: 1px solid #b0c9e8 !important;
-    box-shadow: inset 0 1px 3px rgba(255,255,255,0.6) !important;
+.header-cart-btn {
+    background: var(--primary);
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
 }
 
-.monto-total-num-destacado {
-    font-size: 32px !important;
-    font-weight: bold !important;
+.header-cart-btn:hover {
+    background: var(--primary-dark);
 }
 
-.contenedor-centrado-boto {
-    display: flex !important;
-    justify-content: center !important;
+.header-cart-badge {
+    background-color: #ef4444;
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
 }
 
-/* Gran Botón de Confirmación Verde Metalizado */
-.btn-finalizar-orden-verde {
-    padding: 16px 45px !important;
-    background: linear-gradient(to bottom, #60c98a, #41a468) !important;
-    color: white !important;
-    border: 1px solid #2f855a !important;
-    border-radius: 30px !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    text-transform: uppercase !important;
-    box-shadow: 0 5px 15px rgba(47, 133, 90, 0.3), inset 0 1px 2px rgba(255,255,255,0.4) !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    transition: all 0.2s ease !important;
+/* 🗺️ LAYOUT ESTRUCTURAL */
+.main-container {
+    display: flex;
+    max-width: 1440px;
+    margin: 40px auto;
+    padding: 0 40px;
+    gap: 40px;
 }
-.btn-finalizar-orden-verde:hover {
-    background: linear-gradient(to bottom, #52be7c, #388e58) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(47, 133, 90, 0.4) !important;
+
+.sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+.filter-group {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.filter-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-content {
+    padding: 20px;
+}
+
+.filter-list {
+    list-style: none;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+}
+
+/* 📦 DASHBOARD DE PRODUCTOS */
+.content-products {
+    flex-grow: 1;
+}
+
+.content-header {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+.grid-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    border-color: #cbd5e1;
+}
+
+.product-img {
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 20px;
+}
+
+.product-img img {
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.product-brand {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.4;
+    height: 44px;
+    overflow: hidden;
+}
+
+.price-container {
+    margin-top: 16px;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 12px;
+}
+
+.price-normal {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.product-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.badge-oferta {
+    background: #dcfce7;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: auto;
+}
+
+.product-sku {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 16px 0;
+    font-weight: 500;
+}
+
+.product-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.quantity-selector {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.quantity-btn {
+    background: #ffffff;
+    border: none;
+    width: 32px;
+    height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.quantity-btn:hover {
+    background: #f1f5f9;
+}
+
+.quantity-input {
+    width: 35px;
+    text-align: center;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.btn-buy {
+    flex-grow: 1;
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-buy:hover {
+    background: var(--primary-dark);
+}
+
+.alert-info {
+    background: #eff6ff;
+    color: #1e40af;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    grid-column: 1 / -1;
+    border: 1px solid #bfdbfe;
 }

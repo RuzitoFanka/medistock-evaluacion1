@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator  # 🛡️ Protección contra valores negativos
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.db.models import Sum
 from django.contrib.admin.models import LogEntry
 
 # =========================================================================
@@ -29,14 +30,12 @@ class Producto(models.Model):
     
     # 🌟 Campo para las alertas de reabastecimiento
     stock_minimo = models.PositiveIntegerField(default=100)
+    
+    # 📊 CAMPO FÍSICO INTEGRADO: Guarda la sumatoria real sincronizada por señales
+    stock_total = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.codigo_producto} - {self.nombre}"
-
-    @property
-    def stock_total(self):
-        # Suma automática del stock en todas las bodegas
-        return sum(item.stock for item in self.existencias.all())
 
     @property
     def requiere_reabastecimiento(self):
@@ -54,13 +53,29 @@ class BodegaStock(models.Model):
 
 
 # =========================================================================
+# SIGNALS - RECALCULO AUTOMÁTICO DE STOCK DESDE EL PANEL ADMIN
+# =========================================================================
+
+@receiver([post_save, post_delete], sender=BodegaStock)
+def actualizar_stock_global_producto(sender, instance, **kwargs):
+    """
+    Cada vez que se añade, modifica o elimina un lote físico en BodegaStock,
+    se calcula la sumatoria real y se estampa en el stock_total del Producto.
+    """
+    producto = instance.producto
+    if producto:
+        # Sumamos las existencias de todas las bodegas de este producto
+        total = BodegaStock.objects.filter(producto=producto).aggregate(total_stock=Sum('stock'))['total_stock'] or 0
+        # Guardamos directamente en la columna física
+        Producto.objects.filter(id=producto.id).update(stock_total=total)
+
+
+# =========================================================================
 # SIGNALS - LIMPIEZA TOTAL AUTOMÁTICA DEL HISTORIAL ADM
 # =========================================================================
 
 @receiver([post_save, post_delete], sender=Producto)
 def limpiar_historial_admin_total(sender, instance, **kwargs):
-  
-  
     try:
         # Borra instantáneamente cualquier acción asociada al ID de este producto
         LogEntry.objects.filter(object_id=str(instance.id)).delete()
