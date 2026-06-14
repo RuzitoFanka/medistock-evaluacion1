@@ -14,7 +14,8 @@
         <a href="{% url 'pantalla-tienda' %}" class="navbar-brand-link" title="Volver al Inicio">
             <div class="navbar-brand">⚕️ MediStock Portal</div>
         </a>
-        <input type="text" class="search-bar" placeholder="¿Qué estás buscando?">
+        
+        <input type="text" id="inputBuscador" class="search-bar" placeholder="¿Qué estás buscando?" onkeyup="filtrarProductosPorTexto()">
         
         <div class="top-info-container">
             <div class="top-info">Módulos de Adquisición Centralizados</div>
@@ -74,9 +75,9 @@
         <section class="content-products">
             <div class="content-header">Productos Destacados de Medicinas e Insumos Activos</div>
             
-            <div class="grid-products">
+            <div class="grid-products" id="contenedorGridProductos">
                 {% for prod in productos %}
-                <div class="product-card">
+                <div class="product-card" data-nombre="{{ prod.nombre|lower }}">
                     <div>
                         <div class="product-img">
                             {% if prod.imagen %}
@@ -102,20 +103,14 @@
                         
                         <div class="product-actions">
                             <div class="quantity-selector">
-                                <button class="quantity-btn" onclick="cambiarCantidad(this, -1, {{ prod.stock_total }})">-</button>
+                                <button class="quantity-btn" onclick="cambiarCantidad(this, -1, 99)">-</button>
                                 <input type="text" class="quantity-input" value="1" readonly>
-                                <button class="quantity-btn" onclick="cambiarCantidad(this, 1, {{ prod.stock_total }})">+</button>
+                                <button class="quantity-btn" onclick="cambiarCantidad(this, 1, 99)">+</button>
                             </div>
                             
-                            {% if prod.stock_total > 0 %}
-                            <button class="btn-buy" onclick="agregarAlCarrito('{{ prod.id }}', '{{ prod.nombre }}', '{{ prod.precio_unitario }}', {{ prod.stock_total }}, this)">
+                            <button class="btn-buy" style="background-color: #0284c7; color: white;" onclick="agregarAlCarrito('{{ prod.id }}', '{{ prod.nombre }}', '{{ prod.precio_unitario }}', 99, this)">
                                 Agregar 🛒
                             </button>
-                            {% else %}
-                            <button class="btn-buy" style="background-color: #a0aec0 !important; cursor: not-allowed;" disabled>
-                                Agotado 🚫
-                            </button>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -150,6 +145,21 @@
         document.addEventListener("DOMContentLoaded", () => {
             actualizarInterfazCarrito();
         });
+
+        // 🛠️ LÓGICA DEL BUSCADOR EN TIEMPO REAL
+        function filtrarProductosPorTexto() {
+            const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase().trim();
+            const tarjetas = document.querySelectorAll('.product-card');
+
+            tarjetas.forEach(tarjeta => {
+                const nombreProducto = tarjeta.getAttribute('data-nombre');
+                if (nombreProducto.includes(textoBusqueda)) {
+                    tarjeta.style.display = ""; // Muestra la tarjeta si coincide
+                } else {
+                    tarjeta.style.display = "none"; // Oculta la tarjeta si no coincide
+                }
+            });
+        }
 
         function toggleCartPanel() {
             const sidebar = document.getElementById('cartSidebar');
@@ -243,7 +253,7 @@
                 alert("El carrito está vacío.");
                 return;
             }
-a.
+
             const ordenAPreparar = [...carrito];
             localStorage.setItem('ultimo_pedido', JSON.stringify(ordenAPreparar));
 
@@ -260,12 +270,10 @@ a.
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(res => {
                 if (res.status === 200) {
-
                     localStorage.removeItem('carrito');
                     carrito = [];
                     actualizarInterfazCarrito();
                     
- 
                     window.location.href = "{% url 'resumen_orden' %}"; 
                 } else {
                     alert("Error en el pedido: " + res.body.error);
